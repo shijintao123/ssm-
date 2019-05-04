@@ -1,0 +1,38 @@
+1.用户注册超过6个月
+    SELECT
+    t_customer.id,
+    t_customer.create_date,
+    t_customer.`name`
+    FROM
+    t_customer
+    WHERE
+    t_customer.is_valid = 1 AND
+    DATE_ADD(create_date,INTERVAL 6 MONTH)<NOW()
+2.用户订单超过6个月
+
+    先找出用户订单未超过6个月的
+    SELECT
+    o.cus_id as id
+    FROM
+    t_customer_order as o
+    WHERE
+    o.is_valid = 1
+    and DATE_ADD(o.order_date,INTERVAL 6 MONTH) > NOW()
+完整SQL
+       SELECT
+             c.*
+              FROM
+              t_customer c
+              WHERE
+              c.is_valid = 1 AND
+              DATE_ADD(create_date,INTERVAL 6 MONTH)<NOW()
+          	and c.id NOT in(
+          	 SELECT
+              o.cus_id as id
+              FROM
+              t_customer_order as o
+              WHERE
+              o.is_valid = 1
+              and DATE_ADD(o.order_date,INTERVAL 6 MONTH) > NOW()
+          )
+    数据导入到客户流失表中
